@@ -399,7 +399,7 @@
 	dw 50, 8	;silent
 	dw 3043, 256	;g1
 	dw 50, 8	;silent
-	dw 1521, 512	;g2
+	;dw 1521, 512	;g2
 	dw 50, 128	;silent
 	dw 3224, 512	;fis1
 	dw 3416, 128	;f1
