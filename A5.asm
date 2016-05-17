@@ -30,6 +30,7 @@ CreateStreet:
 		mov 	bl, 004h; color
 		mov		cx, 1
 		int		10h
+		;-------- end 1 char created
 
 		mov 	ah, 02h ; set cursor
 		mov 	dh, temp
@@ -42,15 +43,50 @@ CreateStreet:
 		mov 	bl, 004h; color
 		mov		cx, 1
 		int		10h
+		;-------- end 1 char created
 
+		mov 	ah, 02h ; set cursor
+		mov 	dh, temp
+		mov 	dl, 22
+		int 	10h
+
+		mov 	ax, 206
+		mov 	ah, 09h ; Write Character and Attribute at Current Cursor Position
+		mov		bh, 0
+		mov 	bl, 00Ah; color
+		mov		cx, 1
+		int		10h
+		;-------- end 1 char created
+		jmp 	skipLcreateLine
+		jmpLcreateLine:
+		jmp 	LcreateLine
+		skipLcreateLine:
+
+		mov 	ah, 02h ; set cursor
+		mov 	dh, temp
+		mov 	dl, 44
+		int 	10h
+
+		mov 	ax, 206
+		mov 	ah, 09h ; Write Character and Attribute at Current Cursor Position
+		mov		bh, 0
+		mov 	bl, 00Ah; color
+		mov		cx, 1
+		int		10h
+		;-------- end 1 char created
+
+		
 		inc 	temp
 
 		cmp		temp, 25
-		jne		LcreateLine
+		jne		jmpLcreateLine
 
 	CreateObj:
 
 	mov		si, offset ObjStreet
+
+InfLoop:
+	jmp InfLoop
 
 
 end main
