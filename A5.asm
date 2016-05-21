@@ -7,7 +7,8 @@
 	PoCarBar	db  23 ; for Position of Car on Left-bar
 	PoCar 		db 	23 ; for Position of Car on Street
 	PlayerPos	db	33 ; 24-42
-	PlayerPosTemp	db 33 	
+	PlayerPosTemp db 33
+	BotPosTemp	db  5,27	
 	BotPos		db	7 dup (-3)	
 
 .code
@@ -241,18 +242,72 @@ DrawBotCar	PROC
 	PUSH SI
 	PUSH DI
 
+	
 	mov ah, 02
 	mov bh, 00
-	mov dh, 05
-	mov dl, 27
+	mov si, 0
+	mov dh, BotPosTemp[si]
+	mov si, 1
+	mov dl, BotPosTemp[si]
 	int 10h
 
 	mov ah, 09
-	mov al, 'E'
+	mov al, 223
 	mov bh, 0
-	mov bl, 0Ah
+	mov bl, 0Eh
 	mov cx, 1
 	int 10h
+
+	mov ah, 02
+	mov bh, 00
+	mov si, 0
+	mov dh, BotPosTemp[si]
+	dec	dh
+	mov si, 1
+	mov dl, BotPosTemp[si]
+	dec dl
+	int 10h
+
+	mov ah, 09
+	mov al, 219
+	mov bh, 0
+	mov bl, 0Eh
+	mov cx, 1
+	int 10h
+
+	mov ah, 02
+	mov bh, 00
+	mov si, 0
+	mov dh, BotPosTemp[si]
+	dec	dh
+	mov si, 1
+	mov dl, BotPosTemp[si]
+	int 10h
+
+	mov ah, 09
+	mov al, 219
+	mov bh, 0
+	mov bl, 0Eh
+	mov cx, 1
+	int 10h
+
+	mov ah, 02
+	mov bh, 00
+	mov si, 0
+	mov dh, BotPosTemp[si]
+	dec	dh
+	mov si, 1
+	mov dl, BotPosTemp[si]
+	inc dl
+	int 10h
+
+	mov ah, 09
+	mov al, 219
+	mov bh, 0
+	mov bl, 0Eh
+	mov cx, 1
+	int 10h
+
 
 	POP DI
 	POP SI
