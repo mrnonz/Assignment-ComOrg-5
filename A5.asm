@@ -9,6 +9,7 @@
 	PlayerPos	db	33 ; 24-42
 	PlayerPosTemp	db 33 	
 	BotPos		db	7 dup (-3)		
+	;BotSpawnPos	db	?
 
 .code
 	org		0100h
@@ -44,7 +45,6 @@ CreateStreet:
 		inc 	temp2
 		cmp 	temp2, 44
 		jne 	CreateStreetBar
-
 
 		mov 	ah, 02h ; set cursor
 		mov 	dh, temp
@@ -168,6 +168,35 @@ CreateStreet:
 
 InfLoop:
 	jmp InfLoop
+
+BotSpawn PROC
+	PUSH AX
+	PUSH CX
+	PUSH DX
+	PUSH BX
+	PUSH SP ; The value stored is the initial SP value
+	PUSH BP
+	PUSH SI
+	PUSH DI
+
+	mov ax, 7
+	int 62h
+
+	cmp BotPos[si], -3
+	jne SkipSpawnBot
+		add BotPos[si], 1
+	SkipSpawnBot: 
+
+	POP DI
+	POP SI
+	POP BP
+	POP AX ;no POP SP here, only ADD SP,2
+	POP BX
+	POP DX
+	POP CX
+	POP AX
+	ret
+BotSpawn endp
 
 DrawScore PROC
 	PUSH AX
