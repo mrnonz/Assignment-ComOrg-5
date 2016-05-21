@@ -8,8 +8,7 @@
 	PoCar 		db 	23 ; for Position of Car on Street
 	PlayerPos	db	33 ; 24-42
 	PlayerPosTemp	db 33 	
-	BotPos		db	7 dup (-3)		
-	;BotSpawnPos	db	?
+	BotPos		db	7 dup (-3)	
 
 .code
 	org		0100h
@@ -165,6 +164,7 @@ CreateStreet:
 		call	DrawScore
 		call	DrawHiScore
 		call	DrawCar
+		call	DrawBotCar
 
 InfLoop:
 	jmp InfLoop
@@ -197,6 +197,73 @@ BotSpawn PROC
 	POP AX
 	ret
 BotSpawn endp
+
+DrawAllBot PROC
+	PUSH AX
+	PUSH CX
+	PUSH DX
+	PUSH BX
+	PUSH SP ; The value stored is the initial SP value
+	PUSH BP
+	PUSH SI
+	PUSH DI
+
+	mov si, 0
+	DrawBots:
+	cmp si, 6
+	ja retDrawAllBot
+		cmp BotPos[si], -3
+		je skipDrawBot
+
+
+
+		skipDrawBot:
+
+	retDrawAllBot:
+	POP DI
+	POP SI
+	POP BP
+	POP AX ;no POP SP here, only ADD SP,2
+	POP BX
+	POP DX
+	POP CX
+	POP AX
+	ret
+DrawAllBot endp
+
+DrawBotCar	PROC
+	PUSH AX
+	PUSH CX
+	PUSH DX
+	PUSH BX
+	PUSH SP ; The value stored is the initial SP value
+	PUSH BP
+	PUSH SI
+	PUSH DI
+
+	mov ah, 02
+	mov bh, 00
+	mov dh, 05
+	mov dl, 27
+	int 10h
+
+	mov ah, 09
+	mov al, 'E'
+	mov bh, 0
+	mov bl, 0Ah
+	mov cx, 1
+	int 10h
+
+	POP DI
+	POP SI
+	POP BP
+	POP AX ;no POP SP here, only ADD SP,2
+	POP BX
+	POP DX
+	POP CX
+	POP AX
+	ret
+DrawBotCar endp
 
 DrawScore PROC
 	PUSH AX
