@@ -158,6 +158,7 @@ CreateStreet:
 		int		10h
 
 		call	DrawScore
+		call	DrawHiScore
 
 InfLoop:
 	jmp InfLoop
@@ -267,4 +268,162 @@ DrawScore PROC
 	POP AX
 	ret 
 DrawScore endp
+
+DrawHiScore PROC
+	PUSH AX
+	PUSH CX
+	PUSH DX
+	PUSH BX
+	PUSH SP ; The value stored is the initial SP value
+	PUSH BP
+	PUSH SI
+	PUSH DI
+
+	mov 	tempProc, 62
+	LDrawHiScore:
+	mov 	ah, 02h ; set cursor
+	mov 	dh, 15
+	mov 	dl, tempProc
+	int 	10h
+
+	mov 	ax, 176
+	mov 	ah, 09h ; Write Character and Attribute at Current Cursor Position
+	mov		bh, 0
+	mov 	bl, 00Ch; color
+	mov		cx, 1
+	int		10h
+	;-------- end 1 char created
+
+	inc 	tempProc
+	cmp		tempProc, 73
+
+	jne 	LDrawHiScore
+
+	mov 	ah, 02h ; set cursor
+	mov 	dh, 15
+	mov 	dl, 63
+	int 	10h
+
+	mov 	ax, 'H'
+	mov 	ah, 09h ; Write Character and Attribute at Current Cursor Position
+	mov		bh, 0
+	mov 	bl, 00Fh; color
+	mov		cx, 1
+	int		10h
+	;-------- end 1 char created
+
+	mov 	ah, 02h ; set cursor
+	mov 	dh, 15
+	mov 	dl, 64
+	int 	10h
+
+	mov 	ax, 'I'
+	mov 	ah, 09h ; Write Character and Attribute at Current Cursor Position
+	mov		bh, 0
+	mov 	bl, 00Fh; color
+	mov		cx, 1
+	int		10h
+	;-------- end 1 char created
+
+	mov 	ah, 02h ; set cursor
+	mov 	dh, 15
+	mov 	dl, 65
+	int 	10h
+
+	mov 	ax, 'G'
+	mov 	ah, 09h ; Write Character and Attribute at Current Cursor Position
+	mov		bh, 0
+	mov 	bl, 00Fh; color
+	mov		cx, 1
+	int		10h
+	;-------- end 1 char created
+
+	mov 	ah, 02h ; set cursor
+	mov 	dh, 15
+	mov 	dl, 66
+	int 	10h
+
+	mov 	ax, 'H'
+	mov 	ah, 09h ; Write Character and Attribute at Current Cursor Position
+	mov		bh, 0
+	mov 	bl, 00Fh; color
+	mov		cx, 1
+	int		10h
+	;-------- end 1 char created
+
+	mov 	ah, 02h ; set cursor
+	mov 	dh, 15
+	mov 	dl, 67
+	int 	10h
+
+	mov 	ax, 'S'
+	mov 	ah, 09h ; Write Character and Attribute at Current Cursor Position
+	mov		bh, 0
+	mov 	bl, 00Fh; color
+	mov		cx, 1
+	int		10h
+	;-------- end 1 char created
+
+	mov 	ah, 02h ; set cursor
+	mov 	dh, 15
+	mov 	dl, 68
+	int 	10h
+
+	mov 	ax, 'C'
+	mov 	ah, 09h ; Write Character and Attribute at Current Cursor Position
+	mov		bh, 0
+	mov 	bl, 00Fh; color
+	mov		cx, 1
+	int		10h
+	;-------- end 1 char created
+
+	mov 	ah, 02h ; set cursor
+	mov 	dh, 15
+	mov 	dl, 69
+	int 	10h
+
+	mov 	ax, 'O'
+	mov 	ah, 09h ; Write Character and Attribute at Current Cursor Position
+	mov		bh, 0
+	mov 	bl, 00Fh; color
+	mov		cx, 1
+	int		10h
+	;-------- end 1 char created
+
+	mov 	ah, 02h ; set cursor
+	mov 	dh, 15
+	mov 	dl, 70
+	int 	10h
+
+	mov 	ax, 'R'
+	mov 	ah, 09h ; Write Character and Attribute at Current Cursor Position
+	mov		bh, 0
+	mov 	bl, 00Fh; color
+	mov		cx, 1
+	int		10h
+	;-------- end 1 char created
+
+	mov 	ah, 02h ; set cursor
+	mov 	dh, 15
+	mov 	dl, 71
+	int 	10h
+
+	mov 	ax, 'E'
+	mov 	ah, 09h ; Write Character and Attribute at Current Cursor Position
+	mov		bh, 0
+	mov 	bl, 00Fh; color
+	mov		cx, 1
+	int		10h
+	;-------- end 1 char created
+
+	POP DI
+	POP SI
+	POP BP
+	POP AX ;no POP SP here, only ADD SP,2
+	POP BX
+	POP DX
+	POP CX
+	POP AX
+	ret 
+DrawHiScore endp
 end main
