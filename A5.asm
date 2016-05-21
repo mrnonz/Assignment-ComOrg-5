@@ -160,7 +160,7 @@ CreateStreet:
 
 		call	DrawScore
 		call	DrawHiScore
-		call	DrewCar
+		call	DrawCar
 
 InfLoop:
 	jmp InfLoop
