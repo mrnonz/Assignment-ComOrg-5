@@ -5,6 +5,7 @@
 	temp2		db 	0
 	temp		db 	0
 	PoCarBar	db  23 ; for Position of Car on Left-bar
+	PoCar 		db 	23 ; for Position of Car on Street
 .code
 	org		0100h
 main:
@@ -159,6 +160,7 @@ CreateStreet:
 
 		call	DrawScore
 		call	DrawHiScore
+		call	DrewCar
 
 InfLoop:
 	jmp InfLoop
@@ -426,4 +428,38 @@ DrawHiScore PROC
 	POP AX
 	ret 
 DrawHiScore endp
+
+DrawCar PROC
+	PUSH AX
+	PUSH CX
+	PUSH DX
+	PUSH BX
+	PUSH SP ; The value stored is the initial SP value
+	PUSH BP
+	PUSH SI
+	PUSH DI
+
+	mov 	ah, 02h ; set cursor
+	mov 	dh, 15
+	mov 	dl, 71
+	int 	10h
+
+	mov 	ax, 'E'
+	mov 	ah, 09h ; Write Character and Attribute at Current Cursor Position
+	mov		bh, 0
+	mov 	bl, 00Fh; color
+	mov		cx, 1
+	int		10h
+	;-------- end 1 char created
+
+	POP DI
+	POP SI
+	POP BP
+	POP AX ;no POP SP here, only ADD SP,2
+	POP BX
+	POP DX
+	POP CX
+	POP AX
+	ret 
+DrawCar endp
 end main
