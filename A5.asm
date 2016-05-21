@@ -2,7 +2,7 @@
 
 .data
 	temp		db 	0
-	PoCarBar	db  24 ; for Position of Car on Left-bar
+	PoCarBar	db  23 ; for Position of Car on Left-bar
 .code
 	org		0100h
 main:
@@ -100,10 +100,24 @@ CreateStreet:
 		mov 	dl, 4
 		int 	10h
 
-		mov 	ax, 232
+		mov 	ax, 244
 		mov 	ah, 09h ; Write Character and Attribute at Current Cursor Position
 		mov		bh, 0
-		mov 	bl, 00Dh; color
+		mov 	bl, 00Bh; color
+		mov		cx, 1
+		int		10h
+		;-------- end 1 char created
+
+		; create start-point
+		mov 	ah, 02h ; set cursor
+		mov 	dh, 24
+		mov 	dl, 4
+		int 	10h
+
+		mov 	ax, 244
+		mov 	ah, 09h ; Write Character and Attribute at Current Cursor Position
+		mov		bh, 0
+		mov 	bl, 00Eh; color
 		mov		cx, 1
 		int		10h
 		;-------- end 1 char created
