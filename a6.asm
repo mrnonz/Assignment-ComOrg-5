@@ -2,7 +2,7 @@
 .data
 	PlayerPos 	db 33;24-42 
 	PlayerPosTemp	db 33 		
-	Road		db 4 dup (-5)
+	Road		db 7 dup (-5)
 
 
 .code
@@ -25,6 +25,32 @@ main:
 	;MOV AH, 4CH                  ; RETURN CONTROL TO DOS
 	;INT 21H
 	ret
+
+	BotSpawn proc
+		PUSH AX
+		PUSH CX
+		PUSH DX
+		PUSH BX
+		PUSH SP ; The value stored is the initial SP value
+		PUSH BP
+		PUSH SI
+		PUSH DI
+		
+		mov ax, 7
+		int 62h
+
+		
+
+		POP DI
+		POP SI
+		POP BP
+		POP AX ;no POP SP here, only ADD SP,2
+		POP BX
+		POP DX
+		POP CX
+		POP AX
+	 	ret
+	BotSpawn endp
 
 	Input proc
 		PUSH AX
