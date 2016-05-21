@@ -6,6 +6,10 @@
 	temp		db 	0
 	PoCarBar	db  23 ; for Position of Car on Left-bar
 	PoCar 		db 	23 ; for Position of Car on Street
+	PlayerPos	db	33 ; 24-42
+	PlayerPosTemp	db 33 	
+	BotPos		db	7 dup (-3)		
+
 .code
 	org		0100h
 main:
@@ -429,7 +433,7 @@ DrawHiScore PROC
 	ret 
 DrawHiScore endp
 
-DrawCar PROC
+DrawCar PROC 		; player at row 21
 	PUSH AX
 	PUSH CX
 	PUSH DX
@@ -439,17 +443,125 @@ DrawCar PROC
 	PUSH SI
 	PUSH DI
 
-	mov 	ah, 02h ; set cursor
-	mov 	dh, 15
-	mov 	dl, 71
-	int 	10h
+		;DrawOldPos
+		mov ah, 02
+		mov bh, 00
+		mov dh,	21
+		mov dl, PlayerPosTemp
+		int 10h
 
-	mov 	ax, 'E'
-	mov 	ah, 09h ; Write Character and Attribute at Current Cursor Position
-	mov		bh, 0
-	mov 	bl, 00Fh; color
-	mov		cx, 1
-	int		10h
+		mov ah, 09
+		mov al, 220;ascii
+		mov bh, 00
+		mov bl, 00h;attribute
+		mov cx, 1
+		int 10h
+
+		mov ah, 02
+		mov bh, 00
+		mov dh,	22
+		mov dl, PlayerPosTemp
+		dec	dl
+		int 10h
+
+		mov ah, 09
+		mov al, 219;ascii
+		mov bh, 00
+		mov bl, 00h;attribute
+		mov cx, 1
+		int 10h
+
+		mov ah, 02
+		mov bh, 00
+		mov dh,	22
+		mov dl, PlayerPosTemp
+		int 10h
+
+		mov ah, 09
+		mov al, 219;ascii
+		mov bh, 00
+		mov bl, 00h;attribute
+		mov cx, 1
+		int 10h
+
+		mov ah, 02
+		mov bh, 00
+		mov dh,	22
+		mov dl, PlayerPosTemp
+		inc dl
+		int 10h
+
+		mov ah, 09
+		mov al, 219;ascii
+		mov bh, 00
+		mov bl, 00h;attribute
+		mov cx, 1
+		int 10h
+
+		;DrawNewPos
+
+		mov ah, 02
+		mov bh, 00
+		mov dh,	21
+		mov dl, PlayerPos
+		int 10h
+
+		mov ah, 09
+		mov al, 220;ascii
+		mov bh, 00
+		mov bl, 04h;attribute
+		mov cx, 1
+		int 10h
+
+		mov ah, 02
+		mov bh, 00
+		mov dh,	22
+		mov dl, PlayerPos
+		dec	dl
+		int 10h
+
+		mov ah, 09
+		mov al, 219;ascii
+		mov bh, 00
+		mov bl, 04h;attribute
+		mov cx, 1
+		int 10h
+
+		mov ah, 02
+		mov bh, 00
+		mov dh,	22
+		mov dl, PlayerPos
+		int 10h
+
+		mov ah, 09
+		mov al, 219;ascii
+		mov bh, 00
+		mov bl, 04h;attribute
+		mov cx, 1
+		int 10h
+
+		mov ah, 02
+		mov bh, 00
+		mov dh,	22
+		mov dl, PlayerPos
+		inc	dl
+		int 10h
+
+		mov ah, 09
+		mov al, 219;ascii
+		mov bh, 00
+		mov bl, 04h;attribute
+		mov cx, 1
+		int 10h
+
+        MOV     CX, 01H     ; add 16 = 1sec delay
+        MOV     DX, 400H
+        MOV     AH, 86H
+        INT     15H
+
+		mov ah, PlayerPos
+		mov PlayerPosTemp, ah
+
 	;-------- end 1 char created
 
 	POP DI
@@ -460,6 +572,6 @@ DrawCar PROC
 	POP DX
 	POP CX
 	POP AX
-	ret 
+	ret 	
 DrawCar endp
 end main
