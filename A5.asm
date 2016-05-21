@@ -1,8 +1,8 @@
 .model tiny
 
 .data
-	ObjStreet 	db	25	dup(0)
 	temp		db 	0
+	PoCarBar	db  24 ; for Position of Car on Left-bar
 .code
 	org		0100h
 main:
@@ -75,15 +75,51 @@ CreateStreet:
 		int		10h
 		;-------- end 1 char created
 
+
+		mov 	ah, 02h ; set cursor
+		mov 	dh, temp
+		mov 	dl, 4
+		int 	10h
+
+		mov 	ax, 176
+		mov 	ah, 09h ; Write Character and Attribute at Current Cursor Position
+		mov		bh, 0
+		mov 	bl, 007h; color
+		mov		cx, 1
+		int		10h
+		;-------- end 1 char created
 		
 		inc 	temp
 
 		cmp		temp, 25
 		jne		jmpLcreateLine
 
-	CreateObj:
+		; create goal
+		mov 	ah, 02h ; set cursor
+		mov 	dh, 0
+		mov 	dl, 4
+		int 	10h
 
-	mov		si, offset ObjStreet
+		mov 	ax, 232
+		mov 	ah, 09h ; Write Character and Attribute at Current Cursor Position
+		mov		bh, 0
+		mov 	bl, 00Dh; color
+		mov		cx, 1
+		int		10h
+		;-------- end 1 char created
+
+		; create car-bar
+		mov 	ah, 02h ; set cursor
+		mov 	dh, PoCarBar
+		mov 	dl, 4
+		int 	10h
+
+		mov 	ax, 207
+		mov 	ah, 09h ; Write Character and Attribute at Current Cursor Position
+		mov		bh, 0
+		mov 	bl, 00Ch; color
+		mov		cx, 1
+		int		10h
 
 InfLoop:
 	jmp InfLoop
