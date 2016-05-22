@@ -174,7 +174,7 @@ CreateStreet:
 		;call	BotSpawn
 		call	DrawCar
 		;call 	DrawBotCar
-		call	DrawAllBot
+		;call	DrawAllBot
 
 		mov     cx, 03h		; add 16 = 1sec delay
 		mov     dx, 2120h
@@ -205,18 +205,34 @@ RandomBot PROC
 	mov si,24
 	RunTo42:
 		cmp BotPos[si], 0
-		jea skipAddBot
+		jae skipAddBot
 
-		mov ax, 5
-		int 62h	; random to ax
+			mov ax, 5
+			int 62h	; random to ax
 
-		cmp ax, CountSpawn
-		jne skipAddBot
+			cmp ax, CountSpawn
+			jne skipAddBot
 			mov BotPos[si], 0
+		
 		skipAddBot:		
 		add si,3
 		cmp si,42
 	jna RunTo42
+
+	mov si,24
+	RunToDraw:	
+		cmp BotPos[si], 0
+		jb	skipDrawBot
+			mov ah, BotPos[si]
+			mov BotPosTemp[0], ah
+			mov ax, si
+			mov BotPosTemp[1], al
+			call DrawBotCar
+
+		skipDrawBot:
+		add si, 3
+		cmp si, 42
+	jna RunToDraw
 
 	POP DI
 	POP SI
