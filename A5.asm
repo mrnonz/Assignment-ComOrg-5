@@ -4,6 +4,8 @@
 	tempProc	db 	0
 	temp2		db 	0
 	temp		db 	0
+	Score 		db  0
+	HiScore 	db  0
 	PoCarBar	db  23 ; for Position of Car on Left-bar
 	PlayerPos	db	33 ; 24-42 ; for Position of Car on Street
 	PlayerPosTemp db 33
@@ -13,6 +15,8 @@
 	CountFrame 	db 	0
 	CountSpawn	dw  0 ;0-3
 	savePress	db 	0 ;store Pressed key by User
+	temp3 		db 	0
+	gameStatus 	db 	0 ; 0 is normal and 1 is GameOver
 .code
 	org		0100h
 main:
@@ -175,10 +179,15 @@ CreateStreet:
 		;call 	DrawBotCar
 		call 	RandomBot
 
+		cmp 	gameStatus, 1
+		je 		quit
+
+
 		add 	CountSpawn, 1
 		cmp 	CountSpawn, 5
 		jne 	skipCountSpawn
 		mov 	CountSpawn, 0
+		add 	Score, 1
 
 		skipCountSpawn:
 
@@ -231,6 +240,11 @@ CreateStreet:
 
 		cmp 	PoCarBar, 0
 		jne 	toScreenZone
+quit:
+
+		mov     ah, 00h ; Set to 80x25
+	    mov     al, 03h
+	    int     10h
 
 RandomBot PROC
 	PUSH AX
@@ -264,16 +278,18 @@ RandomBot PROC
 		cmp BotPos[si], -1
 		je	skipDrawBot
 			mov ah, BotPos[si]
-			mov BotPosTemp[0], ah
+			mov BotPosTemp[0], ah ; Row
 			mov ax, si
-			mov BotPosTemp[1], al
+			mov BotPosTemp[1], al ; Col
 			call DrawBotCar
+			call CheckCollision
 
 			add BotPos[si], 1
 			cmp BotPos[si], 26
 			jne skipNewRandom
 			mov BotPos[si], -1
 			skipNewRandom:
+
 		skipDrawBot:
 		add si, 3
 		cmp si, 42
@@ -289,6 +305,66 @@ RandomBot PROC
 	POP AX
 	ret
 RandomBot endp
+
+CheckCollision PROC
+	PUSH AX
+	PUSH CX
+	PUSH DX
+	PUSH BX
+	PUSH SP ; The value stored is the initial SP value
+	PUSH BP
+	PUSH SI
+	PUSH DI
+
+	mov ax, 0
+	checkColumn:
+	mov al, BotPosTemp[1] ; Col
+	sub al, PlayerPos
+
+	cmp al, 2
+	ja  NextCheckCol
+	jmp checkRow
+
+	NextCheckCol:
+	mov al, BotPosTemp[1] ; Col
+	sub al, PlayerPos
+	neg al
+
+	cmp al, 2
+	ja 	QuitCheck
+
+	checkRow:
+
+	mov al, BotPosTemp[0] ; Row
+	sub al, 21
+
+	cmp al, 1
+	ja 	NextCheckRow
+	; quit Game !!!!!
+	jmp gameCollision
+	NextCheckRow:
+	mov al, BotPosTemp[0] ; Row
+	sub al, 21
+	neg al
+
+	cmp al, 1
+	ja QuitCheck
+
+	gameCollision:
+
+	mov gameStatus, 1
+
+	QuitCheck:
+	POP DI
+	POP SI
+	POP BP
+	POP AX ;no POP SP here, only ADD SP,2
+	POP BX
+	POP DX
+	POP CX
+	POP AX
+	ret 
+CheckCollision endp
 
 DrawBotCar	PROC 	;BotPosTemp[0] <- row  //  BotPosTemp[1] <- col
 	PUSH AX
