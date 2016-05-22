@@ -158,8 +158,8 @@
 	  correct_score
 	  print_true
 	 
-	  wrong_score
-	  print_false
+	  ;wrong_score
+	  ;print_false
 	  ;===========END Answer==================
 	  mas_4L
 	  mas_9L
@@ -168,6 +168,7 @@
 	endm
 .data
 	tempProc	db 	0
+	temp4		db  0
 	temp2		db 	0
 	temp		db 	0
 	Score 		db  0
@@ -211,9 +212,11 @@
  	val dw ?
 	msg_score db ""
 	decimal db "00000$"
+
 	val_x dw ?
 	msg_x db ""
 	x db "00000$"
+
 	Wrong 		db 0
 
 	IsPlayerWin	db 0 ; 0 is lose and 1 is winner
@@ -464,10 +467,11 @@ CreateStreet:
 		jmp 	ScreenZone
 		skiptoScreenZone:
 		call	DrawScore
-		;call	DrawHiScore
-		;call	BotSpawn
+		; create score int
+		call	ShowScore
+		; create score int
+		
 		call	DrawCar
-		;call 	DrawBotCar
 		call 	RandomBot
 
 		cmp 	gameStatus, 1
@@ -576,9 +580,7 @@ EndGame:
 	mov 	dl, Score
 	correct_score
 	print_true
-	 
-	mov 	dl, Wrong
-	wrong_score
+
 	;===========END Answer==================
 	mas_4L
 	mas_9L
@@ -594,6 +596,59 @@ EndGame:
 
     MOV AH, 4CH                  ; RETURN CONTROL TO DOS
     INT 21H
+
+ShowScore proc
+	PUSH AX
+	PUSH CX
+	PUSH DX
+	PUSH BX
+	PUSH SP ; The value stored is the initial SP value
+	PUSH BP
+	PUSH SI
+	PUSH DI
+
+		mov temp, 68
+
+		mov al, score
+		mov temp2, al
+	ShowScoreTo:
+		mov ax, 00
+		mov al, temp2
+		mov bl, 10
+		div bl
+		mov temp4, ah
+		mov temp2, al
+
+		mov ah, 02
+		mov bh, 00
+		mov dl, temp
+		mov dh, 18
+		int 10h
+		
+		mov ah, 09
+		mov al, temp4
+		add al, 48
+		mov bh, 00
+		mov bl, 0Ah
+		mov cx, 1
+		int 10h
+
+		add temp, -1
+		cmp temp2, 0
+		jne ShowScoreTo
+
+
+
+	POP DI
+	POP SI
+	POP BP
+	POP AX ;no POP SP here, only ADD SP,2
+	POP BX
+	POP DX
+	POP CX
+	POP AX
+		ret
+ShowScore endp
 
 WinScreenEnd proc near
 	
@@ -891,6 +946,10 @@ DrawScore PROC
 	PUSH BP
 	PUSH SI
 	PUSH DI
+
+
+
+
 
 	mov 	tempProc, 62
 	LDrawScore:
