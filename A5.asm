@@ -17,11 +17,11 @@
 	org		0100h
 main:
 
+ScreenZone:
+
 	mov     ah, 00h ; Set to 80x25
     mov     al, 03h
     int     10h
-
-ScreenZone:
 
 CreateStreet:
 	CreateLine:
@@ -164,10 +164,10 @@ CreateStreet:
 		mov		cx, 1
 		int		10h
 
-		jmp 	skiptomain
-		tomain:
-		jmp 	main
-		skiptomain:
+		jmp 	skiptoScreenZone
+		toScreenZone:
+		jmp 	ScreenZone
+		skiptoScreenZone:
 		call	DrawScore
 		call	DrawHiScore
 		;call	BotSpawn
@@ -223,7 +223,7 @@ CreateStreet:
 		skipCountFrame:
 
 		cmp 	PoCarBar, 0
-		jne 	tomain
+		jne 	toScreenZone
 
 BotSpawn PROC
 	PUSH AX
