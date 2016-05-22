@@ -202,8 +202,8 @@ RandomBot PROC
 	PUSH SI
 	PUSH DI
 
+	mov si,24
 	RunTo42:
-		mov si,24
 		cmp BotPos[si], 0
 		jea skipAddBot
 
@@ -217,9 +217,6 @@ RandomBot PROC
 		add si,3
 		cmp si,42
 	jna RunTo42
-
-	
-
 
 	POP DI
 	POP SI
