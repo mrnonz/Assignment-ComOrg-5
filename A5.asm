@@ -9,9 +9,9 @@
 	PlayerPosTemp db 33
 	BotPosTemp	db  5,27	
 	multi		db 	3
-	BotPos		db	7 dup (0)	
+	BotPos		db	44 dup (-1)	;24-42
 	CountFrame 	db 	0
-
+	CountSpawn	dw  0 ;0-3
 	savePress	db 	0 ;store Pressed key by User
 .code
 	org		0100h
@@ -173,7 +173,14 @@ CreateStreet:
 		;call	BotSpawn
 		call	DrawCar
 		;call 	DrawBotCar
-		call	DrawAllBot
+		call 	RandomBot
+
+		add 	CountSpawn, 1
+		cmp 	CountSpawn, 5
+		jne 	skipCountSpawn
+		mov 	CountSpawn, 0
+
+		skipCountSpawn:
 
 		mov     cx, 01h		; add 16 = 1sec delay
 		mov     dx, 2120h
@@ -225,7 +232,7 @@ CreateStreet:
 		cmp 	PoCarBar, 0
 		jne 	toScreenZone
 
-BotSpawn PROC
+RandomBot PROC
 	PUSH AX
 	PUSH CX
 	PUSH DX
@@ -235,56 +242,43 @@ BotSpawn PROC
 	PUSH SI
 	PUSH DI
 
-	mov ax, 73	;random
-	int 62h
+	mov si, 24
+	RunTo42:
+		cmp BotPos[si], -1
+		jne skipAddBot
 
-	cmp BotPos[si], -1
-	jne SkipSpawnBot
-		add BotPos[si], 1
-	SkipSpawnBot: 
+			mov ax, 50 ; random 0-4
+			int 62h	; random to ax
 
-	POP DI
-	POP SI
-	POP BP
-	POP AX ;no POP SP here, only ADD SP,2
-	POP BX
-	POP DX
-	POP CX
-	POP AX
-	ret
-BotSpawn endp
+			cmp ax, CountSpawn
+			jne skipAddBot
+			mov BotPos[si], 0
+		
+		skipAddBot:		
+		add si,3
+		cmp si,42
+	jna RunTo42
 
-DrawAllBot PROC
-	PUSH AX
-	PUSH CX
-	PUSH DX
-	PUSH BX
-	PUSH SP ; The value stored is the initial SP value
-	PUSH BP
-	PUSH SI
-	PUSH DI
+	mov si,24
+	RunToDraw:	
+		cmp BotPos[si], -1
+		je	skipDrawBot
+			mov ah, BotPos[si]
+			mov BotPosTemp[0], ah
+			mov ax, si
+			mov BotPosTemp[1], al
+			call DrawBotCar
 
-	mov si, 0
-	DrawBots:
-	cmp si, 7
-	je retDrawAllBot
-		cmp BotPos[si], -3
-		je skipDrawBot
-
-		mov ah, BotPos[si]
-		mov BotPosTemp[0], ah
-		mov ax, si
-		mul multi
-		add dx, 26
-		mov BotPosTemp[1], dh
-
-		call DrawBotCar
-
+			add BotPos[si], 1
+			cmp BotPos[si], 26
+			jne skipNewRandom
+			mov BotPos[si], -1
+			skipNewRandom:
 		skipDrawBot:
-		add si, 1
-		jmp DrawBots
+		add si, 3
+		cmp si, 42
+	jna RunToDraw
 
-	retDrawAllBot:
 	POP DI
 	POP SI
 	POP BP
@@ -294,7 +288,7 @@ DrawAllBot PROC
 	POP CX
 	POP AX
 	ret
-DrawAllBot endp
+RandomBot endp
 
 DrawBotCar	PROC 	;BotPosTemp[0] <- row  //  BotPosTemp[1] <- col
 	PUSH AX
@@ -375,6 +369,35 @@ DrawBotCar	PROC 	;BotPosTemp[0] <- row  //  BotPosTemp[1] <- col
 	POP AX
 	ret
 DrawBotCar endp
+
+BotSpawn PROC
+	PUSH AX
+	PUSH CX
+	PUSH DX
+	PUSH BX
+	PUSH SP ; The value stored is the initial SP value
+	PUSH BP
+	PUSH SI
+	PUSH DI
+
+	mov ax, 73	;random
+	int 62h
+
+	cmp BotPos[si], -1
+	jne SkipSpawnBot
+		add BotPos[si], 1
+	SkipSpawnBot: 
+
+	POP DI
+	POP SI
+	POP BP
+	POP AX ;no POP SP here, only ADD SP,2
+	POP BX
+	POP DX
+	POP CX
+	POP AX
+	ret
+BotSpawn endp
 
 DrawScore PROC
 	PUSH AX
