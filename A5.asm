@@ -5,22 +5,23 @@
 	temp2		db 	0
 	temp		db 	0
 	PoCarBar	db  23 ; for Position of Car on Left-bar
-	PoCar 		db 	23 ; for Position of Car on Street
-	PlayerPos	db	33 ; 24-42
+	PlayerPos	db	33 ; 24-42 ; for Position of Car on Street
 	PlayerPosTemp db 33
 	BotPosTemp	db  5,27	
 	multi		db 	3
 	BotPos		db	7 dup (0)	
 	CountFrame 	db 	0
+
+	savePress	db 	0 ;store Pressed key by User
 .code
 	org		0100h
 main:
 
+ScreenZone:
+
 	mov     ah, 00h ; Set to 80x25
     mov     al, 03h
     int     10h
-
-ScreenZone:
 
 CreateStreet:
 	CreateLine:
@@ -136,11 +137,6 @@ CreateStreet:
 		int		10h
 		;-------- end 1 char created
 
-		jmp 	skiptomain
-		tomain:
-		jmp 	main
-		skiptomain:
-
 		; create start-point
 		mov 	ah, 02h ; set cursor
 		mov 	dh, 24
@@ -168,6 +164,10 @@ CreateStreet:
 		mov		cx, 1
 		int		10h
 
+		jmp 	skiptoScreenZone
+		toScreenZone:
+		jmp 	ScreenZone
+		skiptoScreenZone:
 		call	DrawScore
 		call	DrawHiScore
 		;call	BotSpawn
@@ -175,11 +175,45 @@ CreateStreet:
 		;call 	DrawBotCar
 		call	DrawAllBot
 
-		mov     cx, 03h		; add 16 = 1sec delay
+		mov     cx, 01h		; add 16 = 1sec delay
 		mov     dx, 2120h
 		mov     ah, 86h
 		int     15h
 
+		; Input Left or Right for Red-Car
+		input:
+		mov 	ah, 01h
+		int 	16h
+
+		jz 		Notinput; not press
+
+		mov		ah, 00h
+		int 	16h
+		;mov 	savePress, ax #bug
+
+		cmp 	ax, 4B00h   ;arrow LEFT.
+	    je  	arrow_left
+	    cmp 	ax, 4D00h   ;arrow RIGHT.
+	    je  	arrow_right
+
+	    arrow_left:
+
+	    cmp 	PlayerPos, 24
+	    jle 	ContinuePressed
+	    dec 	PlayerPos
+
+	    jmp 	ContinuePressed
+	    arrow_right:
+
+	    cmp 	PlayerPos, 42
+	    jge		ContinuePressed
+	    inc 	PlayerPos
+
+	    ContinuePressed:
+		; Pressed Left
+
+
+		Notinput:
 		inc 	CountFrame
 		cmp		CountFrame,25
 		jl 		skipCountFrame
@@ -189,7 +223,7 @@ CreateStreet:
 		skipCountFrame:
 
 		cmp 	PoCarBar, 0
-		jne 	tomain
+		jne 	toScreenZone
 
 BotSpawn PROC
 	PUSH AX
