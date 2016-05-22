@@ -10,9 +10,9 @@
 	PlayerPosTemp db 33
 	BotPosTemp	db  5,27	
 	multi		db 	3
-	BotPos		db	42 dup (?)	;24-42
+	BotPos		db	42 dup (-1)	;24-42
 	CountFrame 	db 	0
-	CountSpawn	db  0 ;0-3
+	CountSpawn	dw  0 ;0-3
 .code
 	org		0100h
 main:
@@ -204,16 +204,22 @@ RandomBot PROC
 
 	RunTo42:
 		mov si,24
+		cmp BotPos[si], 0
+		jea skipAddBot
 
 		mov ax, 5
 		int 62h	; random to ax
 
-		add ax, -4
-		mov BotPos[si], al
-
+		cmp ax, CountSpawn
+		jne skipAddBot
+			mov BotPos[si], 0
+		skipAddBot:		
 		add si,3
 		cmp si,42
 	jna RunTo42
+
+	
+
 
 	POP DI
 	POP SI
