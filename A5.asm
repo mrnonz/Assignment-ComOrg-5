@@ -11,6 +11,7 @@
 	BotPosTemp	db  5,27	
 	multi		db 	3
 	BotPos		db	7 dup (-1)	
+	CountFrame 	db 	0
 
 .code
 	org		0100h
@@ -136,6 +137,11 @@ CreateStreet:
 		int		10h
 		;-------- end 1 char created
 
+		jmp 	skiptomain
+		tomain:
+		jmp 	main
+		skiptomain:
+
 		; create start-point
 		mov 	ah, 02h ; set cursor
 		mov 	dh, 24
@@ -170,8 +176,21 @@ CreateStreet:
 		call 	DrawBotCar
 		;call	DrawAllBot
 
-InfLoop:
-	jmp InfLoop
+		mov     cx, 03h		; add 16 = 1sec delay
+		mov     dx, 2120h
+		mov     ah, 86h
+		int     15h
+
+		inc 	CountFrame
+		cmp		CountFrame,25
+		jl 		skipCountFrame
+
+		dec 	PoCarBar
+		mov 	CountFrame, 0
+		skipCountFrame:
+
+		cmp 	PoCarBar, 0
+		jne 	tomain
 
 BotSpawn PROC
 	PUSH AX
