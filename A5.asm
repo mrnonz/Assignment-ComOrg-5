@@ -246,6 +246,15 @@ quit:
 	    mov     al, 03h
 	    int     10h
 
+	    mov 	al, HiScore
+		cmp		al, Score
+		ja 		skipNewHigh
+
+		mov 	al, Score
+		mov 	HiScore, al
+
+skipNewHigh:
+
 RandomBot PROC
 	PUSH AX
 	PUSH CX
