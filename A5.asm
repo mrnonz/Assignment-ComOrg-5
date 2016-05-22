@@ -10,9 +10,8 @@
 	PlayerPosTemp db 33
 	BotPosTemp	db  5,27	
 	multi		db 	3
-	BotPos		db	7 dup (-1)	
+	BotPos		db	7 dup (0)	
 	CountFrame 	db 	0
-
 .code
 	org		0100h
 main:
@@ -173,8 +172,8 @@ CreateStreet:
 		call	DrawHiScore
 		;call	BotSpawn
 		call	DrawCar
-		call 	DrawBotCar
-		;call	DrawAllBot
+		;call 	DrawBotCar
+		call	DrawAllBot
 
 		mov     cx, 03h		; add 16 = 1sec delay
 		mov     dx, 2120h
@@ -202,7 +201,7 @@ BotSpawn PROC
 	PUSH SI
 	PUSH DI
 
-	mov ax, 7
+	mov ax, 73	;random
 	int 62h
 
 	cmp BotPos[si], -1
@@ -233,9 +232,9 @@ DrawAllBot PROC
 
 	mov si, 0
 	DrawBots:
-	cmp si, 6
-	ja retDrawAllBot
-		cmp BotPos[si], -1
+	cmp si, 7
+	je retDrawAllBot
+		cmp BotPos[si], -3
 		je skipDrawBot
 
 		mov ah, BotPos[si]
@@ -263,7 +262,7 @@ DrawAllBot PROC
 	ret
 DrawAllBot endp
 
-DrawBotCar	PROC
+DrawBotCar	PROC 	;BotPosTemp[0] <- row  //  BotPosTemp[1] <- col
 	PUSH AX
 	PUSH CX
 	PUSH DX
@@ -727,11 +726,6 @@ DrawCar PROC 		; player at row 21
 		mov bl, 04h;attribute
 		mov cx, 1
 		int 10h
-
-        MOV     CX, 01H     ; add 16 = 1sec delay
-        MOV     DX, 400H
-        MOV     AH, 86H
-        INT     15H
 
 		mov ah, PlayerPos
 		mov PlayerPosTemp, ah
