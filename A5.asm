@@ -9,7 +9,8 @@
 	PlayerPos	db	33 ; 24-42
 	PlayerPosTemp db 33
 	BotPosTemp	db  5,27	
-	BotPos		db	7 dup (-3)	
+	multi		db 	3
+	BotPos		db	7 dup (-1)	
 
 .code
 	org		0100h
@@ -164,8 +165,10 @@ CreateStreet:
 
 		call	DrawScore
 		call	DrawHiScore
+		;call	BotSpawn
 		call	DrawCar
-		call	DrawBotCar
+		call 	DrawBotCar
+		;call	DrawAllBot
 
 InfLoop:
 	jmp InfLoop
@@ -183,7 +186,7 @@ BotSpawn PROC
 	mov ax, 7
 	int 62h
 
-	cmp BotPos[si], -3
+	cmp BotPos[si], -1
 	jne SkipSpawnBot
 		add BotPos[si], 1
 	SkipSpawnBot: 
@@ -213,12 +216,21 @@ DrawAllBot PROC
 	DrawBots:
 	cmp si, 6
 	ja retDrawAllBot
-		cmp BotPos[si], -3
+		cmp BotPos[si], -1
 		je skipDrawBot
 
+		mov ah, BotPos[si]
+		mov BotPosTemp[0], ah
+		mov ax, si
+		mul multi
+		add dx, 26
+		mov BotPosTemp[1], dh
 
+		call DrawBotCar
 
 		skipDrawBot:
+		add si, 1
+		jmp DrawBots
 
 	retDrawAllBot:
 	POP DI
@@ -245,14 +257,12 @@ DrawBotCar	PROC
 	
 	mov ah, 02
 	mov bh, 00
-	mov si, 0
-	mov dh, BotPosTemp[si]
-	mov si, 1
-	mov dl, BotPosTemp[si]
+	mov dh, BotPosTemp[0]
+	mov dl, BotPosTemp[1]
 	int 10h
 
 	mov ah, 09
-	mov al, 223
+	mov al, 220
 	mov bh, 0
 	mov bl, 0Eh
 	mov cx, 1
@@ -260,11 +270,9 @@ DrawBotCar	PROC
 
 	mov ah, 02
 	mov bh, 00
-	mov si, 0
-	mov dh, BotPosTemp[si]
-	dec	dh
-	mov si, 1
-	mov dl, BotPosTemp[si]
+	mov dh, BotPosTemp[0]
+	inc	dh
+	mov dl, BotPosTemp[1]
 	dec dl
 	int 10h
 
@@ -277,11 +285,9 @@ DrawBotCar	PROC
 
 	mov ah, 02
 	mov bh, 00
-	mov si, 0
-	mov dh, BotPosTemp[si]
-	dec	dh
-	mov si, 1
-	mov dl, BotPosTemp[si]
+	mov dh, BotPosTemp[0]
+	inc	dh
+	mov dl, BotPosTemp[1]
 	int 10h
 
 	mov ah, 09
@@ -293,11 +299,9 @@ DrawBotCar	PROC
 
 	mov ah, 02
 	mov bh, 00
-	mov si, 0
-	mov dh, BotPosTemp[si]
-	dec	dh
-	mov si, 1
-	mov dl, BotPosTemp[si]
+	mov dh, BotPosTemp[0]
+	inc	dh
+	mov dl, BotPosTemp[1]
 	inc dl
 	int 10h
 
